@@ -3,7 +3,7 @@ from flask import Flask,render_template,jsonify,request
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def home():
     return render_template("index.html")
 
@@ -27,11 +27,9 @@ def trainers():
 def  login():
     return render_template("login.html")
 
-@app.route("/index")
-def index():
-    return render_template("index.html")
 
-@app.route('/register',method==["POST","GET"])
+
+@app.route('/register',methods=["POST","GET"])
 def register():
     if request.method=="POST":
         name=request.form["name"]
@@ -42,6 +40,32 @@ def register():
         courses=request.form["courses"]
         register=request.form["register"]
     return render_template("register.html")
+
+
+
+@app.route('/api/register',methods=["POST"])
+def api_register():
+    data = request.get_json()
+    email = data.get("email")
+
+    if email in users_db:
+        return jsonify({"status":"error","message":"user already exists with this email"}),400
+
+    users_db[email]=data
+    return jsonify({"status":"success","message":"Registration successful!"})
+
+@app.route('/api/login',methods=["POST"])
+def api_login():
+    data = request.get_json()
+    email = data.get("email")
+    password=data.get("password")
+
+
+    user = users_db.get(email)
+    if user and user.get("password")==password:
+        return jsonify({"status": "success","message": "login sucessful! Welcome back."})
+    else:
+        return jsonify({"status":"error","message":"invalid email or password!"}),401
 
 if __name__=='__main__':
     app.run(debug=True)

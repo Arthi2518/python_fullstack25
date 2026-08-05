@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url for ('static',filename=css/style.css)}} ">
+ <link rel="stylesheet" href="{{url_for ('static',filename='css/style.css')}} ">
     <title>Register page</title>
 </head>
 
@@ -12,7 +12,7 @@
     <header>Register</header>
     <main>
         <h2>Student Registration </h2>
-        <form id="registerform" method="POST">
+        <form id="registerForm" method="POST">
             <label>Full Name</label><br>
             <input type="text" placeholder="Enter Your Name" id="name" name="name"><br>
             <label>Email</label><br>
