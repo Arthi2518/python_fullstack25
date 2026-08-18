@@ -1,7 +1,7 @@
 import sqlite3
 # pyrefly: ignore [missing-import]
 from flask import Flask,render_template,jsonify,request,redirect,url_for,session
-
+from werkzeug.security import generate_password_hash,check_password_hash
 app = Flask(__name__)
 app.secret_key="super_secret_key"
 
@@ -78,6 +78,7 @@ def api_register():
     user = cursor.fetchone()
     if user:
         return jsonify({"status": "error", "message": "User already exists with this email!"}), 400
+    hashed_password = generate_password_hash(data["password"])
     
     cursor.execute("INSERT INTO users (name, email, password, dob, gender, course) VALUES (?, ?, ?, ?, ?, ?)", (data["name"], data["email"], data["password"], data["dob"], data["gender"], data["course"]))
     conn.commit()
@@ -94,7 +95,7 @@ def api_login():
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
     user = cursor.fetchone()
     conn.close()
-    if user and user["password"] == password:
+    if user and check_password_hash( user["password"] == password ):
         # session variables to keep track of logged in user
         session["user_email"] = user["email"]
         session["user_name"] = user["name"]
